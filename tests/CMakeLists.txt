@@ -32,6 +32,11 @@ add_executable(as-test-basics test-basics.c ${TEST_COMMON_SRC})
 add_dependencies(as-test-basics appstream)
 add_test(test-basic as-test-basics ${CMAKE_CURRENT_SOURCE_DIR})
 
+# AppStream Recommendation tests
+add_executable(as-test-recommendation test-recommendation.c ${TEST_COMMON_SRC})
+add_dependencies(as-test-recommendation appstream)
+add_test(test-recommendation as-test-recommendation ${CMAKE_CURRENT_SOURCE_DIR})
+
 # AppStream XML parser tests
 add_executable(as-test-xmldata test-xmldata.c ${TEST_COMMON_SRC})
 add_dependencies(as-test-xmldata appstream)
@@ -49,6 +54,7 @@ add_test(test-database as-test-database ${CMAKE_CURRENT_SOURCE_DIR})
 
 if(SANITIZERS)
 	set_tests_properties(test-basic PROPERTIES ENVIRONMENT ASAN_OPTIONS=detect_leaks=0)
+	set_tests_properties(test-recommendation PROPERTIES ENVIRONMENT ASAN_OPTIONS=detect_leaks=0)
 	set_tests_properties(test-xml PROPERTIES ENVIRONMENT ASAN_OPTIONS=detect_leaks=0)
 	set_tests_properties(test-yaml PROPERTIES ENVIRONMENT ASAN_OPTIONS=detect_leaks=0)
 	set_tests_properties(test-database PROPERTIES ENVIRONMENT ASAN_OPTIONS=detect_leaks=0)
