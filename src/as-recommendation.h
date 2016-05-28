@@ -39,8 +39,8 @@ struct _AsRecommendation
 
 AsRecommendation		*as_recommendation_new (void);
 
-const gchar*		as_recommendation_get_recommended_package (AsRecommendation *rec);
-void				as_recommendation_set_recommended_package (AsRecommendation *rec,
+const gchar*		as_recommendation_get_recommended (AsRecommendation *rec);
+void				as_recommendation_set_recommended (AsRecommendation *rec,
 									 const gchar *value);
 
 gchar				**as_recommendation_get_because (AsRecommendation *rec);

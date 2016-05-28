@@ -44,12 +44,12 @@ test_recommendation ()
 
 	rec = as_recommendation_new ();
 
-	as_recommendation_set_recommended_package(rec, "org.example.test.desktop");
+	as_recommendation_set_recommended(rec, "org.example.test.desktop");
 	strv = _get_dummy_strv ("test");
 	as_recommendation_set_because (rec, strv);
 	g_strfreev (strv);
 
-	str = as_recommendation_get_recommended_package (rec);
+	str = as_recommendation_get_recommended (rec);
 
 	g_assert_cmpstr (str, ==, "org.example.test.desktop");
 

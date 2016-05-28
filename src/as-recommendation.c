@@ -38,7 +38,7 @@
 
 typedef struct
 {
-	gchar	  *recommendedpackage;
+	gchar	  *recommended;
 	gchar	  **because;
 } AsRecommendationPrivate;
 
@@ -60,40 +60,40 @@ as_recommendation_finalize (GObject* object)
 	AsRecommendation *rec = AS_RECOMMENDATION (object);
 	AsRecommendationPrivate *priv = GET_PRIVATE (rec);
 
-	g_free (priv->recommendedpackage);
+	g_free (priv->recommended);
 	g_strfreev (priv->because);
 
 	G_OBJECT_CLASS (as_recommendation_parent_class)->finalize (object);
 }
 
 /**
- * as_recommendation_get_recommended_package:
+ * as_recommendation_get_recommended:
  * @rec: a #AsRecommendation instance.
  *
  * Returns: The recommended package name.
  */
 const gchar*
-as_recommendation_get_recommended_package (AsRecommendation *rec)
+as_recommendation_get_recommended (AsRecommendation *rec)
 {
 	AsRecommendationPrivate *priv = GET_PRIVATE (rec);
-	return priv->recommendedpackage;
+	return priv->recommended;
 }
 
 /**
- * as_recommendation_set_recommended_package
+ * as_recommendation_set_recommended
  * @rec: a #AsRecommendation instance.
  * @value: the recommended package name.
  *
  * Set the recommended package name for this recommendation.
  */
 void
-as_recommendation_set_recommended_package(AsRecommendation *rec, const gchar* value)
+as_recommendation_set_recommended(AsRecommendation *rec, const gchar* value)
 {
 	AsRecommendationPrivate *priv = GET_PRIVATE (rec);
 
-	g_free (priv->recommendedpackage);
-	priv->recommendedpackage = g_strdup (value);
-	g_object_notify ((GObject *) rec, "recommendedpackage");
+	g_free (priv->recommended);
+	priv->recommended = g_strdup (value);
+	g_object_notify ((GObject *) rec, "recommended");
 }
 
 /**
@@ -139,7 +139,7 @@ as_recommendation_get_property (GObject * object, guint property_id, GValue * va
 
 	switch(property_id) {
 		case AS_RECOMMENDATION_RECOMMENDED_PACKAGE:
-			g_value_set_string (value, as_recommendation_get_recommended_package (rec));
+			g_value_set_string (value, as_recommendation_get_recommended (rec));
 			break;
 		case AS_RECOMMENDATION_BECAUSE:
 			g_value_set_boxed (value, as_recommendation_get_because (rec));
@@ -161,7 +161,7 @@ as_recommendation_set_property (GObject * object, guint property_id, const GValu
 
 	switch(property_id) {
 		case AS_RECOMMENDATION_RECOMMENDED_PACKAGE:
-			as_recommendation_set_recommended_package (rec, g_value_get_string (value));
+			as_recommendation_set_recommended (rec, g_value_get_string (value));
 			break;
 		case AS_RECOMMENDATION_BECAUSE:
 			as_recommendation_set_because (rec, g_value_get_boxed (value));
@@ -192,13 +192,13 @@ as_recommendation_class_init (AsRecommendationClass * klass)
 	object_class->set_property = as_recommendation_set_property;
 
 	/**
-	 * AsRecommendation:recommendedpackage:
+	 * AsRecommendation:recommended:
 	 *
 	 * the name of the recommendation package
 	 */
 	g_object_class_install_property (object_class,
 					AS_RECOMMENDATION_RECOMMENDED_PACKAGE,
-					g_param_spec_string("recommendedpackage", "recommendedpackage", "recommendedpackage", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
+					g_param_spec_string("recommended", "recommended", "recommended", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 
 	/**
 	 * AsRecommendation:because:
