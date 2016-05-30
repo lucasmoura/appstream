@@ -22,38 +22,33 @@
 #include <stdio.h>
 #include "appstream.h"
 
-gchar**
-_get_dummy_strv (const gchar *value)
-{
-	gchar **strv;
-
-	strv = g_new0 (gchar*, 1 + 2);
-	strv[0] = g_strdup (value);
-	strv[1] = NULL;
-
-	return strv;
-}
-
-
 void
 test_recommendation ()
 {
 	AsRecommendation *rec;
-	gchar *str;
-	gchar **strv;
+	gchar *recommendation;
+	gchar **because;
 
 	rec = as_recommendation_new ();
 
 	as_recommendation_set_recommended(rec, "org.example.test.desktop");
-	strv = _get_dummy_strv ("test");
-	as_recommendation_set_because (rec, strv);
-	g_strfreev (strv);
 
-	str = as_recommendation_get_recommended (rec);
+	because = g_new0 (gchar*, 4);
+	because[0] = g_strdup ("test1");
+	because[1] = g_strdup ("test2");
 
-	g_assert_cmpstr (str, ==, "org.example.test.desktop");
+	as_recommendation_set_because (rec, because);
+	g_strfreev (because);
 
-	g_free (str);
+	recommendation = (gchar*) as_recommendation_get_recommended (rec);
+	because = as_recommendation_get_because (rec);
+
+	g_assert_cmpstr (recommendation, ==, "org.example.test.desktop");
+	g_assert_cmpstr (because[0], ==, "test1");
+	g_assert_cmpstr (because[1], ==, "test2");
+
+	g_free (recommendation);
+	g_strfreev (because);
 }
 
 int
