@@ -45,6 +45,7 @@ extern "C" {
 #include <as-utils.h>
 
 #include <recommendation/as-recommendation.h>
+#include <recommendation/as-recommendation-metadata.h>
 
 #ifdef __cplusplus
 };

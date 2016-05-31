@@ -61,11 +61,12 @@ set(APPSTREAM_LIB_SRC
 		as-screenshot.c
 		as-image.c
 		as-release.c
-		recommendation/as-recommendation.c
 		as-validator.c
 		as-validator-issue.c
 		as-icon.c
 		as-translation.c
+		recommendation/as-recommendation.c
+		recommendation/as-recommendation-metadata.c
 )
 
 set(APPSTREAM_LIB_PUBLIC_HEADERS
@@ -83,11 +84,12 @@ set(APPSTREAM_LIB_PUBLIC_HEADERS
 		as-screenshot.h
 		as-image.h
 		as-release.h
-		recommendation/as-recommendation.h
 		as-validator.h
 		as-validator-issue.h
 		as-icon.h
 		as-translation.h
+		recommendation/as-recommendation.h
+		recommendation/as-recommendation-metadata.h
 )
 
 set(APPSTREAM_LIB_PRIVATE_HEADERS
