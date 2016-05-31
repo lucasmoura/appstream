@@ -21,7 +21,6 @@
 #include "as-recommendation.h"
 
 #include <glib.h>
-#include <stdio.h>
 #include <glib-object.h>
 
 

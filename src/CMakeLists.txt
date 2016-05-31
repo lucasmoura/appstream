@@ -61,7 +61,7 @@ set(APPSTREAM_LIB_SRC
 		as-screenshot.c
 		as-image.c
 		as-release.c
-		as-recommendation.c
+		recommendation/as-recommendation.c
 		as-validator.c
 		as-validator-issue.c
 		as-icon.c
@@ -83,7 +83,7 @@ set(APPSTREAM_LIB_PUBLIC_HEADERS
 		as-screenshot.h
 		as-image.h
 		as-release.h
-		as-recommendation.h
+		recommendation/as-recommendation.h
 		as-validator.h
 		as-validator-issue.h
 		as-icon.h

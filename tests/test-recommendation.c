@@ -19,7 +19,6 @@
  */
 
 #include <glib.h>
-#include <stdio.h>
 #include "appstream.h"
 
 void
