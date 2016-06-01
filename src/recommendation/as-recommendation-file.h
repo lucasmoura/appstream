@@ -50,6 +50,10 @@ xmlDoc						*as_recommendation_file_parse_document (AsRecommendationFile *rec_fi
 
 void						as_recommendation_file_parse_recommendations_node (AsRecommendationFile *rec_file,
 												   GPtrArray *recs, xmlNode* node, GError **error);
+
+gchar**						as_recommendation_file_get_children_as_strv (AsRecommendationFile *rec_file,
+																		 xmlNode* node,
+																		 const gchar* element_name);
 G_END_DECLS
 
 #endif

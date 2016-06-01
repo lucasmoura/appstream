@@ -71,6 +71,40 @@ libxml_generic_error (AsRecommendationFile *rec_file, const char *format, ...)
 	g_mutex_unlock (&mutex);
 }
 
+gchar**
+as_recommendation_file_get_children_as_strv (AsRecommendationFile *rec_file, xmlNode* node,
+											 const gchar* element_name)
+{
+	GPtrArray *list;
+	xmlNode *iter;
+	gchar **res;
+	g_return_val_if_fail (rec_file != NULL, NULL);
+	g_return_val_if_fail (element_name != NULL, NULL);
+	list = g_ptr_array_new_with_free_func (g_free);
+
+	for (iter = node->children; iter != NULL; iter = iter->next) {
+		/* discard spaces */
+		if (iter->type != XML_ELEMENT_NODE) {
+					continue;
+		}
+		if (g_strcmp0 ((gchar*) iter->name, element_name) == 0) {
+			gchar* content = NULL;
+			content = (gchar*) xmlNodeGetContent (iter);
+			if (content != NULL) {
+				gchar *s;
+				s = g_strdup (content);
+				g_strstrip (s);
+				g_ptr_array_add (list, s);
+			}
+			g_free (content);
+		}
+	}
+
+	res = as_ptr_array_to_strv (list);
+	g_ptr_array_unref (list);
+	return res;
+}
+
 /**
  * as_recommendation_file_init:
  **/
@@ -153,11 +187,7 @@ as_recommendation_file_parse_recommendation_node (AsRecommendationFile *rec_file
 {
 	xmlNode *iter;
 	const gchar *node_name;
-	GPtrArray *because;
-	gchar **strv;
 	AsRecommendationFilePrivate *priv = GET_PRIVATE (rec_file);
-
-	because = g_ptr_array_new_with_free_func (g_free);
 
 	for (iter = node->children; iter != NULL; iter = iter->next) {
 		g_autofree gchar *content = NULL;
@@ -173,15 +203,12 @@ as_recommendation_file_parse_recommendation_node (AsRecommendationFile *rec_file
 		if (g_strcmp0 (node_name, "recommended") == 0) {
 				as_recommendation_set_recommended (rec, content);
 		} else if (g_strcmp0 (node_name, "because") == 0) {
-			if (content != NULL)
-				g_ptr_array_add (because, g_strdup (content));
+			gchar **because_array;
+			because_array = as_recommendation_file_get_children_as_strv (rec_file, iter, "pkg");
+			as_recommendation_set_because (rec, because_array);
+			g_strfreev (because_array);
 		}
 	}
-
-	strv = as_ptr_array_to_strv (because);
-	as_recommendation_set_because (rec, strv);
-	g_ptr_array_unref (because);
-	g_strfreev (strv);
 
 }
 
