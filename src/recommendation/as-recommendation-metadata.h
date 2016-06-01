@@ -26,6 +26,7 @@
 #define __AS_RECOMMENDATION_METADATA_H
 
 #include <glib.h>
+#include <gio/gio.h>
 #include "as-recommendation.h"
 
 G_BEGIN_DECLS
@@ -49,6 +50,14 @@ void			as_recommendationmetadata_add_component (AsRecommendationMetadata *rec_me
 const gchar		*as_recommendation_metadata_get_origin (AsRecommendationMetadata *rec_metad);
 void			as_recommendation_metadata_set_origin (AsRecommendationMetadata *rec_metad,
 							const gchar *origin);
+
+void			as_recommendation_metadata_parse_file (AsRecommendationMetadata *rec_metad,
+													   GFile *file,
+													   GError **error);
+
+void			as_recommendation_metadata_parse_rec (AsRecommendationMetadata *rec_metad,
+													  const gchar *data,
+													  GError **error);
 
 G_END_DECLS
 

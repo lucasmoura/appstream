@@ -29,15 +29,14 @@
  * See also: #AsRecommendation
  */
 
-#include <glib.h>
-
-#include "as-recommendation-metadata.h"
 #include "as-recommendation.h"
+#include "as-recommendation-metadata.h"
+#include "as-recommendation-file.h"
 
 typedef struct
 {
 	gchar *origin;
-
+	AsRecommendationFile *rec_file;
 	GPtrArray *recs;
 } AsRecommendationMetadataPrivate;
 
@@ -148,4 +147,91 @@ as_recommendation_metadata_new (void)
 	AsRecommendationMetadata *rec_metad;
 	rec_metad = g_object_new (AS_TYPE_RECOMMENDATION_METADATA, NULL);
 	return AS_RECOMMENDATION_METADATA (rec_metad);
+}
+
+/**
+ * as_recommendation_metadata_init_rec:
+ **/
+static void
+as_recommendation_metadata_init_rec (AsRecommendationMetadata *rec_metad)
+{
+	AsRecommendationMetadataPrivate *priv = GET_PRIVATE (rec_metad);
+
+	if (priv->rec_file != NULL)
+		return;
+
+	priv->rec_file = as_recommendation_file_new ();
+	as_recommendation_file_initialize (priv->rec_file, priv->origin);
+}
+
+/**
+ * as_recommendation_metadata_parse_rec:
+ * @rec_metad: A valid #AsRecommendationMetadata instance
+ * @data: XML data describing one or more software recommendations.
+ *
+ * Parses AppStream recommendation files.
+ **/
+void
+as_recommendation_metadata_parse_rec (AsRecommendationMetadata *rec_metad,
+									  const gchar *data, GError **error)
+{
+	AsRecommendationMetadataPrivate *priv = GET_PRIVATE (rec_metad);
+
+	as_recommendation_metadata_init_rec (rec_metad);
+
+	guint i;
+	g_autoptr(GPtrArray) recs = NULL;
+
+	recs = NULL;
+
+	if (recs == NULL)
+		return;
+	for (i = 0; i < recs->len; i++) {
+		AsRecommendation *rec;
+		rec = AS_RECOMMENDATION (g_ptr_array_index (recs, i));
+		g_ptr_array_add (priv->recs,
+					g_object_ref (rec));
+	}
+}
+
+/**
+ * as_recommendation_metadata_parse_file:
+ * @rec_metad: A valid #AsRecommendationMetadata instance
+ * @file: #GFile for the recommendation metadata
+ * @error: A #GError or %NULL.
+ *
+ * Parses a recommendation metadata file.
+ *
+ **/
+void
+as_recommendation_metadata_parse_file (AsRecommendationMetadata *rec_metad,
+									   GFile *file, GError **error)
+{
+	g_autoptr(GInputStream) file_stream = NULL;
+	g_autoptr(GInputStream) stream_data = NULL;
+	g_autoptr(GString) asdata = NULL;
+	gssize len;
+	const gsize buffer_size = 1024 * 32;
+	g_autofree gchar *buffer = NULL;
+
+	file_stream = G_INPUT_STREAM (g_file_read (file, NULL, error));
+	if (file_stream == NULL)
+		return;
+
+	stream_data = g_object_ref (file_stream);
+
+	/*
+	 * TODO: Code resembles as_metadata_parse_file. Extract
+	 *		 behaviour from both methods to a separate class.
+	 */
+	asdata = g_string_new ("");
+	buffer = g_malloc (buffer_size);
+	while ((len = g_input_stream_read (stream_data, buffer, buffer_size, NULL, error)) > 0) {
+		g_string_append_len (asdata, buffer, len);
+	}
+
+	if (len < 0)
+		return;
+
+	as_recommendation_metadata_parse_rec (rec_metad, asdata->str, error);
 }
