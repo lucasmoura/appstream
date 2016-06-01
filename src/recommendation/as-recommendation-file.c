@@ -299,8 +299,8 @@ as_recommendation_file_parse_document (AsRecommendationFile *rec_file, const gch
  *			deserialized from the XML.
  */
 GPtrArray*
-as_recommendation_file_parse_recommendation_file (AsRecommendationFile *rec_file,
-												  const gchar *data, GError **error)
+as_recommendation_file_parse_file (AsRecommendationFile *rec_file,
+								   const gchar *data, GError **error)
 {
 	xmlDoc *doc;
 	xmlNode *root;
