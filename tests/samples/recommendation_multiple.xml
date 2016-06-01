@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+    <recommendations>
+        <recommendation>
+            <recommended>vim.desktop</recommended>
+            <because>
+                <pkg>emacs.desktop</pkg>
+            </because>
+        </recommendation>
+
+        <recommendation>
+            <recommended>ipython.desktop</recommended>
+            <because>
+                <pkg>eric.desktop</pkg>
+                <pkg>winpdb.desktop</pkg>
+            </because>
+        </recommendation>
+    </recommendations>

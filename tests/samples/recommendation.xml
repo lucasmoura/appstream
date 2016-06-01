@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+    <recommendation>
+        <recommended>vim.desktop</recommended>
+        <because>
+            <pkg>emacs.desktop</pkg>
+        </because>
+    </recommendation>

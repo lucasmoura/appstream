@@ -21,6 +21,94 @@
 #include <glib.h>
 #include "appstream.h"
 
+static gchar *datadir = NULL;
+
+void
+test_recommendation_file()
+{
+	AsRecommendationMetadata *rec_metad;
+	GError *error = NULL;
+	AsRecommendation *rec;
+	GPtrArray *recs;
+	GFile *file;
+	gchar *path;
+
+	gchar *recommendation;
+	gchar **because;
+
+	rec_metad = as_recommendation_metadata_new ();
+
+	path = g_build_filename (datadir, "recommendation.xml", NULL);
+	file = g_file_new_for_path (path);
+	g_free (path);
+
+	as_recommendation_metadata_parse_file (rec_metad, file, &error);
+	g_object_unref (file);
+	g_assert_no_error (error);
+
+	recs = as_recommendation_metadata_get_recommendations (rec_metad);
+	g_assert_cmpint(recs->len, ==, 1);
+	rec = AS_RECOMMENDATION (g_ptr_array_index (recs, 0));
+
+	recommendation = (gchar*) as_recommendation_get_recommended (rec);
+	because = as_recommendation_get_because (rec);
+
+	g_assert_cmpstr (recommendation, ==, "vim.desktop");
+	g_assert_cmpstr (because[0], ==, "emacs.desktop");
+
+	g_free (recommendation);
+	g_strfreev (because);
+}
+
+void
+test_multiple_recommendation_nodes()
+{
+	AsRecommendationMetadata *rec_metad;
+	GError *error = NULL;
+	AsRecommendation *rec;
+	GPtrArray *recs;
+	GFile *file;
+	gchar *path;
+
+	gchar *recommendation;
+	gchar **because;
+
+	rec_metad = as_recommendation_metadata_new ();
+
+	path = g_build_filename (datadir, "recommendation_multiple.xml", NULL);
+	file = g_file_new_for_path (path);
+	g_free (path);
+
+	as_recommendation_metadata_parse_file (rec_metad, file, &error);
+	g_object_unref (file);
+	g_assert_no_error (error);
+
+	recs = as_recommendation_metadata_get_recommendations (rec_metad);
+	g_assert_cmpint(recs->len, ==, 2);
+	rec = AS_RECOMMENDATION (g_ptr_array_index (recs, 0));
+
+	recommendation = (gchar*) as_recommendation_get_recommended (rec);
+	because = as_recommendation_get_because (rec);
+
+	g_assert_cmpstr (recommendation, ==, "vim.desktop");
+	g_assert_cmpstr (because[0], ==, "emacs.desktop");
+
+	g_free (recommendation);
+	g_strfreev (because);
+
+	rec = AS_RECOMMENDATION (g_ptr_array_index (recs, 1));
+
+	recommendation = (gchar*) as_recommendation_get_recommended (rec);
+	because = as_recommendation_get_because (rec);
+
+	g_assert_cmpstr (recommendation, ==, "ipython.desktop");
+	g_assert_cmpstr (because[0], ==, "eric.desktop");
+	g_assert_cmpstr (because[1], ==, "winpdb.desktop");
+
+	g_free (recommendation);
+	g_strfreev (because);
+}
+
 void
 test_recommendation ()
 {
@@ -60,7 +148,10 @@ main (int argc, char **argv)
 		return 1;
 	}
 
-	g_assert (argv[1] != NULL);
+	datadir = argv[1];
+	g_assert (datadir != NULL);
+	datadir = g_build_filename (datadir, "samples", NULL);
+	g_assert (g_file_test (datadir, G_FILE_TEST_EXISTS) != FALSE);
 
 	g_setenv ("G_MESSAGES_DEBUG", "all", TRUE);
 	g_test_init (&argc, &argv, NULL);
@@ -69,6 +160,8 @@ main (int argc, char **argv)
 	g_log_set_fatal_mask (NULL, G_LOG_LEVEL_ERROR | G_LOG_LEVEL_CRITICAL);
 
 	g_test_add_func ("/AppStream/Recommendation", test_recommendation);
+	g_test_add_func ("/AppStream/RecommendationFile", test_recommendation_file);
+	g_test_add_func ("/AppStream/RecommendationMultipleNodes", test_multiple_recommendation_nodes);
 
 	ret = g_test_run ();
 	return ret;
