@@ -42,9 +42,9 @@ struct _AsRecommendationMetadata
 
 AsRecommendationMetadata		*as_recommendation_metadata_new (void);
 
-GPtrArray		*as_recommendation_metadata_get_components (AsRecommendationMetadata *rec_metad);
+GPtrArray		*as_recommendation_metadata_get_recommendations (AsRecommendationMetadata *rec_metad);
 
-void			as_recommendationmetadata_add_component (AsRecommendationMetadata *rec_metad,
+void			as_recommendation_metadata_add_recommendation (AsRecommendationMetadata *rec_metad,
 							AsRecommendation *rec);
 
 const gchar		*as_recommendation_metadata_get_origin (AsRecommendationMetadata *rec_metad);

@@ -63,7 +63,12 @@ as_recommendation_metadata_finalize (GObject *object)
 	AsRecommendationMetadata *rec_metad = AS_RECOMMENDATION_METADATA (object);
 	AsRecommendationMetadataPrivate *priv = GET_PRIVATE (rec_metad);
 
-	g_ptr_array_unref (priv->recs);
+	if (priv->rec_file != NULL)
+		g_object_unref (priv->rec_file);
+
+	if (priv->recs != NULL)
+		g_ptr_array_unref (priv->recs);
+
 	g_free (priv->origin);
 
 	G_OBJECT_CLASS (as_recommendation_metadata_parent_class)->finalize (object);
@@ -182,7 +187,7 @@ as_recommendation_metadata_parse_rec (AsRecommendationMetadata *rec_metad,
 	guint i;
 	g_autoptr(GPtrArray) recs = NULL;
 
-	recs = NULL;
+	recs = as_recommendation_file_parse_file(priv->rec_file, data, error);
 
 	if (recs == NULL)
 		return;
