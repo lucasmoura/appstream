@@ -67,6 +67,7 @@ set(APPSTREAM_LIB_SRC
 		as-translation.c
 		recommendation/as-recommendation.c
 		recommendation/as-recommendation-metadata.c
+		recommendation/as-recommendation-file.c
 )
 
 set(APPSTREAM_LIB_PUBLIC_HEADERS
@@ -100,6 +101,7 @@ set(APPSTREAM_LIB_PRIVATE_HEADERS
 		as-screenshot-private.h
 		as-release-private.h
 		as-cache-builder.h
+		recommendation/as-recommendation-file.h
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/xapian
